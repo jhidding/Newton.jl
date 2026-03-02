@@ -1,0 +1,4 @@
+[deps]
+Newton = "5e5cb0bd-a5ad-4230-af7a-47c41cedbcc9"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"

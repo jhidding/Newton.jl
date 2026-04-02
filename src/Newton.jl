@@ -50,7 +50,10 @@ Type for a 3d velocity vector in units of meters per second.
 const VelocityVector = typeof(Vec3d(1)u"m/s")
 
 """
-Particle structure.
+    Particle(mass, position, momentum)
+
+Particle structure. The `position` and `momentum` should be 3-vectors with the correct units,
+and `mass` a scalar mass.
 """
 mutable struct Particle
     mass::Mass

@@ -4,27 +4,58 @@ Newton.jl computes orbits of particles under the force of Gravity.
 
 ## Tutorial
 
-```@eval
+The `Newton.jl` package provides a framework to compute orbits of a set of particles under the force of gravity.
+A particle is a structure with `mass`, `position` and `momentum`.
+
+```@example 1
 using Unitful
 using CairoMakie
-using Newton: set_still!, random_particles, position, run_simulation
+using Printf
+using Newton: set_still!, random_particles, position, mass, velocity, momentum, run_simulation
+```
 
-function plot_n_particles_stabilized(n; seed=nothing)
-    fig = Figure()
-    ax = Axis3(fig[1, 1])
+We provide a way to generate a set of random particles.
 
-    orbits = run_simulation(
-        set_still!(random_particles(n, seed=seed)), 1.0u"s", 5000)
-    for i in 1:n
-        orbit = position.(getindex.(orbits, i))
-        lines!(ax, orbit / u"m")
-	    scatter!(ax, orbit[end] / u"m")
-    end
-	save("three-particle-orbit.svg", fig)
+```@example 1
+ps = random_particles(3, seed=4)
+
+stat(p) = @sprintf("mass: %f,    pos: %5.3f %5.3f %5.3f,    vel: %5.3f %5.3f %5.3f",
+  mass(p), position(p)..., velocity(p)...)
+  
+for (i, p) in enumerate(ps)
+  println("Particle $(i): $(stat(p))")
 end
 
-plot_n_particles_stabilized(3, seed=4)
+@printf "Total momentum: %f %f %f" (momentum(ps)...)
+```
 
+We can set these still without changing their relative velocities:
+
+```@example 1
+set_still!(ps)
+@printf "Total momentum: %f %f %f" (momentum(ps)...)
+```
+
+Let's compute their orbits!
+
+```@example 1
+orbits = run_simulation(ps, 1.0u"s", 5000)
+nothing
+```
+
+And plot them,
+
+```@example 1
+fig = Figure()
+ax = Axis3(fig[1, 1])
+
+for i in 1:3
+  orbit = position.(getindex.(orbits, i))
+  lines!(ax, orbit / u"m")
+  scatter!(ax, orbit[end] / u"m")
+end
+
+save("three-particle-orbit.svg", fig)
 nothing
 ```
 
